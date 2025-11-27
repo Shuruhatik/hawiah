@@ -2,7 +2,7 @@ import { IDriver, Query, Data } from './interfaces/IDriver';
 
 /**
  * Hawiah: A lightweight, schema-less database abstraction layer.
- * Provides a SQL-like API for interacting with various data sources.
+ * Designed to be friendly and easy to use.
  */
 export class Hawiah {
   private driver: IDriver;
@@ -13,7 +13,7 @@ export class Hawiah {
   }
 
   /**
-   * Establishes a connection to the database driver.
+   * Connects to the database.
    */
   async connect(): Promise<void> {
     if (this.isConnected) {
@@ -24,7 +24,7 @@ export class Hawiah {
   }
 
   /**
-   * Closes the connection to the database driver.
+   * Disconnects from the database.
    */
   async disconnect(): Promise<void> {
     if (!this.isConnected) {
@@ -35,9 +35,9 @@ export class Hawiah {
   }
 
   /**
-   * Inserts a new record into the database.
-   * @param data - The data to insert
-   * @returns The inserted record
+   * Adds a new record to the database.
+   * @param data - The data to add
+   * @returns The added record
    */
   async insert(data: Data): Promise<Data> {
     this.ensureConnected();
@@ -60,12 +60,12 @@ export class Hawiah {
   }
 
   /**
-   * Finds records matching the query criteria.
+   * Gets records matching the query.
    * @param query - The filter condition (default: all)
    * @param limit - Optional maximum number of records to return
    * @returns Array of matching records
    */
-  async find(query: Query = {}, limit?: number): Promise<Data[]> {
+  async get(query: Query = {}, limit?: number): Promise<Data[]> {
     this.ensureConnected();
     const results = await this.driver.get(query);
     if (limit && limit > 0) {
@@ -75,30 +75,30 @@ export class Hawiah {
   }
 
   /**
-   * Finds a single record matching the query criteria.
+   * Gets a single record matching the query.
    * @param query - The filter condition
    * @returns The first matching record or null
    */
-  async findOne(query: Query): Promise<Data | null> {
+  async getOne(query: Query): Promise<Data | null> {
     this.ensureConnected();
     return await this.driver.getOne(query);
   }
 
   /**
-   * Finds all records in the database.
+   * Gets all records in the database.
    * @returns Array of all records
    */
-  async findAll(): Promise<Data[]> {
+  async getAll(): Promise<Data[]> {
     this.ensureConnected();
     return await this.driver.get({});
   }
 
   /**
-   * Finds records matching any of the provided queries.
+   * Gets records matching any of the provided queries.
    * @param queries - Array of filter conditions
    * @returns Combined array of matching records
    */
-  async findMany(queries: Query[]): Promise<Data[]> {
+  async getMany(queries: Query[]): Promise<Data[]> {
     this.ensureConnected();
     const results: Data[] = [];
     for (const query of queries) {
@@ -132,12 +132,12 @@ export class Hawiah {
   }
 
   /**
-   * Updates or inserts a record.
+   * Saves a record (adds if new, updates if exists).
    * @param query - The filter condition to check existence
-   * @param data - The data to insert or update
-   * @returns The updated or inserted record
+   * @param data - The data to add or update
+   * @returns The saved record
    */
-  async upsert(query: Query, data: Data): Promise<Data> {
+  async save(query: Query, data: Data): Promise<Data> {
     this.ensureConnected();
     const existing = await this.driver.getOne(query);
     if (existing) {
@@ -149,31 +149,31 @@ export class Hawiah {
   }
 
   /**
-   * Deletes records matching the query.
+   * Removes records matching the query.
    * @param query - The filter condition
-   * @returns Number of deleted records
+   * @returns Number of removed records
    */
-  async delete(query: Query): Promise<number> {
+  async remove(query: Query): Promise<number> {
     this.ensureConnected();
     return await this.driver.delete(query);
   }
 
   /**
-   * Deletes a single record matching the query.
+   * Removes a single record matching the query.
    * @param query - The filter condition
-   * @returns True if a record was deleted
+   * @returns True if a record was removed
    */
-  async deleteOne(query: Query): Promise<boolean> {
+  async removeOne(query: Query): Promise<boolean> {
     this.ensureConnected();
     const count = await this.driver.delete(query);
     return count > 0;
   }
 
   /**
-   * Deletes all records from the database.
-   * @returns Number of deleted records
+   * Clears all records from the database.
+   * @returns Number of removed records
    */
-  async truncate(): Promise<number> {
+  async clear(): Promise<number> {
     this.ensureConnected();
     return await this.driver.delete({});
   }
@@ -183,7 +183,7 @@ export class Hawiah {
    * @param query - The filter condition
    * @returns True if exists
    */
-  async exists(query: Query): Promise<boolean> {
+  async has(query: Query): Promise<boolean> {
     this.ensureConnected();
     return await this.driver.exists(query);
   }
@@ -199,20 +199,18 @@ export class Hawiah {
   }
 
   /**
-   * Counts records where a column matches a value.
-   * @param column - The column name
+   * Counts records where a field matches a value.
+   * @param field - The field name
    * @param value - The value to match
    * @returns Count of records
    */
-  async countBy(column: string, value: any): Promise<number> {
+  async countBy(field: string, value: any): Promise<number> {
     this.ensureConnected();
-    const query: Query = { [column]: value };
+    const query: Query = { [field]: value };
     return await this.driver.count(query);
   }
 
-  // --- ID Helpers ---
-
-  async findById(id: number | string): Promise<Data | null> {
+  async getById(id: number | string): Promise<Data | null> {
     this.ensureConnected();
     return await this.driver.getOne({ _id: id });
   }
@@ -223,64 +221,60 @@ export class Hawiah {
     return count > 0;
   }
 
-  async deleteById(id: number | string): Promise<boolean> {
+  async removeById(id: number | string): Promise<boolean> {
     this.ensureConnected();
     const count = await this.driver.delete({ _id: id });
     return count > 0;
   }
 
-  async existsById(id: number | string): Promise<boolean> {
+  async hasId(id: number | string): Promise<boolean> {
     this.ensureConnected();
     return await this.driver.exists({ _id: id });
   }
 
-  // --- Field Helpers ---
-
-  async findBy(column: string, value: any): Promise<Data[]> {
+  async getBy(field: string, value: any): Promise<Data[]> {
     this.ensureConnected();
-    const query: Query = { [column]: value };
+    const query: Query = { [field]: value };
     return await this.driver.get(query);
   }
 
-  async existsBy(column: string, value: any): Promise<boolean> {
+  async hasBy(field: string, value: any): Promise<boolean> {
     this.ensureConnected();
-    const query: Query = { [column]: value };
+    const query: Query = { [field]: value };
     return await this.driver.exists(query);
   }
 
-  // --- Advanced Querying ---
-
   /**
-   * Orders the results by a specific column.
+   * Sorts the results based on a field.
    * @param query - The filter condition
-   * @param column - The column to sort by
+   * @param field - The field to sort by
    * @param direction - 'asc' or 'desc'
    * @returns Sorted array of records
    */
-  async orderBy(query: Query, column: string, direction: 'asc' | 'desc' = 'asc'): Promise<Data[]> {
+  async sort(query: Query, field: string, direction: 'asc' | 'desc' = 'asc'): Promise<Data[]> {
     this.ensureConnected();
     const results = await this.driver.get(query);
     return results.sort((a, b) => {
-      if (a[column] < b[column]) return direction === 'asc' ? -1 : 1;
-      if (a[column] > b[column]) return direction === 'asc' ? 1 : -1;
+      if (a[field] < b[field]) return direction === 'asc' ? -1 : 1;
+      if (a[field] > b[field]) return direction === 'asc' ? 1 : -1;
       return 0;
     });
   }
 
   /**
-   * Selects specific columns from the results (Projection).
+   * Selects specific fields from the results.
    * @param query - The filter condition
-   * @param columns - Array of column names to select
-   * @returns Array of records with only selected columns
+   * @param fields - Array of field names to select
+   * @returns Array of records with only selected fields
    */
-  async select(query: Query, columns: string[]): Promise<Data[]> {
+  async select(query: Query, fields: string[]): Promise<Data[]> {
     this.ensureConnected();
     const results = await this.driver.get(query);
     return results.map(record => {
       const selected: Data = {};
-      columns.forEach(col => {
-        if (col in record) {
-          selected[col] = record[col];
+      fields.forEach(field => {
+        if (field in record) {
+          selected[field] = record[field];
         }
       });
       return selected;
@@ -288,29 +282,29 @@ export class Hawiah {
   }
 
   /**
-   * Retrieves distinct values for a specific column.
-   * @param column - The column to get distinct values for
+   * Retrieves unique values for a specific field.
+   * @param field - The field to get unique values for
    * @param query - Optional filter condition
    * @returns Array of unique values
    */
-  async distinct(column: string, query: Query = {}): Promise<any[]> {
+  async unique(field: string, query: Query = {}): Promise<any[]> {
     this.ensureConnected();
     const results = await this.driver.get(query);
-    const values = results.map(record => record[column]);
+    const values = results.map(record => record[field]);
     return [...new Set(values)];
   }
 
   /**
-   * Groups records by a specific column.
-   * @param column - The column to group by
+   * Groups records by a specific field.
+   * @param field - The field to group by
    * @param query - Optional filter condition
    * @returns Object where keys are group values and values are arrays of records
    */
-  async groupBy(column: string, query: Query = {}): Promise<{ [key: string]: Data[] }> {
+  async group(field: string, query: Query = {}): Promise<{ [key: string]: Data[] }> {
     this.ensureConnected();
     const results = await this.driver.get(query);
     return results.reduce((groups: { [key: string]: Data[] }, record) => {
-      const key = String(record[column]);
+      const key = String(record[field]);
       if (!groups[key]) {
         groups[key] = [];
       }
@@ -350,59 +344,57 @@ export class Hawiah {
     };
   }
 
-  // --- Aggregation ---
 
   /**
-   * Calculates the sum of a numeric column.
+   * Calculates the sum of a numeric field.
    */
-  async sum(column: string, query: Query = {}): Promise<number> {
+  async sum(field: string, query: Query = {}): Promise<number> {
     this.ensureConnected();
     const results = await this.driver.get(query);
-    return results.reduce((sum, record) => sum + (Number(record[column]) || 0), 0);
+    return results.reduce((sum, record) => sum + (Number(record[field]) || 0), 0);
   }
 
-  async increment(query: Query, column: string, amount: number = 1): Promise<number> {
+  async increment(query: Query, field: string, amount: number = 1): Promise<number> {
     this.ensureConnected();
     const record = await this.driver.getOne(query);
     if (!record) {
       throw new Error('Record not found');
     }
-    const currentValue = Number(record[column]) || 0;
+    const currentValue = Number(record[field]) || 0;
     const newValue = currentValue + amount;
-    await this.driver.update(query, { [column]: newValue });
+    await this.driver.update(query, { [field]: newValue });
     return newValue;
   }
 
-  async decrement(query: Query, column: string, amount: number = 1): Promise<number> {
-    return await this.increment(query, column, -amount);
+  async decrement(query: Query, field: string, amount: number = 1): Promise<number> {
+    return await this.increment(query, field, -amount);
   }
 
-  // --- Array Operations ---
 
-  async push(query: Query, column: string, value: any): Promise<number> {
+  async push(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (!Array.isArray(record[column])) {
-        record[column] = [];
+      if (!Array.isArray(record[field])) {
+        record[field] = [];
       }
-      record[column].push(value);
+      record[field].push(value);
       await this.driver.update(query, record);
       count++;
     }
     return count;
   }
 
-  async pull(query: Query, column: string, value: any): Promise<number> {
+  async pull(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (Array.isArray(record[column])) {
-        const initialLength = record[column].length;
-        record[column] = record[column].filter((item: any) => JSON.stringify(item) !== JSON.stringify(value));
-        if (record[column].length !== initialLength) {
+      if (Array.isArray(record[field])) {
+        const initialLength = record[field].length;
+        record[field] = record[field].filter((item: any) => JSON.stringify(item) !== JSON.stringify(value));
+        if (record[field].length !== initialLength) {
           await this.driver.update(query, record);
           count++;
         }
@@ -411,13 +403,13 @@ export class Hawiah {
     return count;
   }
 
-  async shift(query: Query, column: string): Promise<number> {
+  async shift(query: Query, field: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (Array.isArray(record[column]) && record[column].length > 0) {
-        record[column].shift();
+      if (Array.isArray(record[field]) && record[field].length > 0) {
+        record[field].shift();
         await this.driver.update(query, record);
         count++;
       }
@@ -425,28 +417,28 @@ export class Hawiah {
     return count;
   }
 
-  async unshift(query: Query, column: string, value: any): Promise<number> {
+  async unshift(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (!Array.isArray(record[column])) {
-        record[column] = [];
+      if (!Array.isArray(record[field])) {
+        record[field] = [];
       }
-      record[column].unshift(value);
+      record[field].unshift(value);
       await this.driver.update(query, record);
       count++;
     }
     return count;
   }
 
-  async pop(query: Query, column: string): Promise<number> {
+  async pop(query: Query, field: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (Array.isArray(record[column]) && record[column].length > 0) {
-        record[column].pop();
+      if (Array.isArray(record[field]) && record[field].length > 0) {
+        record[field].pop();
         await this.driver.update(query, record);
         count++;
       }
@@ -454,18 +446,17 @@ export class Hawiah {
     return count;
   }
 
-  // --- Schema/Structure Operations ---
 
   /**
-   * Drops (removes) a column from matching records.
+   * Removes a field from matching records.
    */
-  async drop(query: Query, column: string): Promise<number> {
+  async unset(query: Query, field: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (column in record) {
-        delete record[column];
+      if (field in record) {
+        delete record[field];
         await this.driver.update(query, record);
         count++;
       }
@@ -474,16 +465,16 @@ export class Hawiah {
   }
 
   /**
-   * Renames a column in matching records.
+   * Renames a field in matching records.
    */
-  async rename(query: Query, oldColumn: string, newColumn: string): Promise<number> {
+  async rename(query: Query, oldField: string, newField: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
     let count = 0;
     for (const record of records) {
-      if (oldColumn in record) {
-        record[newColumn] = record[oldColumn];
-        delete record[oldColumn];
+      if (oldField in record) {
+        record[newField] = record[oldField];
+        delete record[oldField];
         await this.driver.update(query, record);
         count++;
       }
@@ -491,7 +482,6 @@ export class Hawiah {
     return count;
   }
 
-  // --- Utilities ---
 
   async first(): Promise<Data | null> {
     this.ensureConnected();
