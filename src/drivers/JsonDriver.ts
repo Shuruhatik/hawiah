@@ -6,7 +6,7 @@ import { IDriver, Query, Data } from '../interfaces/IDriver';
  * Driver implementation for storing data in a local JSON file.
  * Stores data as a simple array of objects.
  */
-export class JsonDriver implements IDriver {
+export class JSONDriver implements IDriver {
   private records: Data[] = [];
   private filePath: string;
   private autoSave: boolean;
