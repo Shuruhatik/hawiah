@@ -1,6 +1,6 @@
 {
   "name": "hawiah",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Schema-less database abstraction layer with multiple driver support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,10 +18,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^12.4.6",
     "firebase": "^12.6.0",
     "mongodb": "^7.0.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
   }
