@@ -36,3 +36,5 @@ test/
 *.tsbuildinfo
 *.md
 
+
+examples/
