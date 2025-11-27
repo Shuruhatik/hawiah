@@ -138,7 +138,6 @@ export class MongoDriver implements IDriver {
             _updatedAt: new Date().toISOString(),
         };
 
-        // Remove _id from update data if present to avoid conflicts
         delete updateData._id;
 
         const result = await this.collection!.updateMany(
@@ -212,7 +211,6 @@ export class MongoDriver implements IDriver {
 
         for (const [key, value] of Object.entries(query)) {
             if (key === '_id') {
-                // Convert string ID to ObjectId if valid
                 if (typeof value === 'string' && ObjectId.isValid(value)) {
                     mongoQuery._id = new ObjectId(value);
                 } else if (typeof value === 'number') {
