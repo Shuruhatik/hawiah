@@ -224,6 +224,117 @@ export class Hawiah {
     return await this.increment(query, field, -amount);
   }
 
+  async sort(query: Query, sortBy: string, order: 'asc' | 'desc' = 'asc'): Promise<Data[]> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    return results.sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) return order === 'asc' ? -1 : 1;
+      if (a[sortBy] > b[sortBy]) return order === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  async select(query: Query, fields: string[]): Promise<Data[]> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    return results.map(record => {
+      const selected: Data = {};
+      fields.forEach(field => {
+        if (field in record) {
+          selected[field] = record[field];
+        }
+      });
+      return selected;
+    });
+  }
+
+  async distinct(field: string, query: Query = {}): Promise<any[]> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    const values = results.map(record => record[field]);
+    return [...new Set(values)];
+  }
+
+  async sum(field: string, query: Query = {}): Promise<number> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    return results.reduce((sum, record) => sum + (Number(record[field]) || 0), 0);
+  }
+
+  async avg(field: string, query: Query = {}): Promise<number> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    if (results.length === 0) return 0;
+    const total = results.reduce((sum, record) => sum + (Number(record[field]) || 0), 0);
+    return total / results.length;
+  }
+
+  async min(field: string, query: Query = {}): Promise<number> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    if (results.length === 0) return 0;
+    return Math.min(...results.map(record => Number(record[field]) || 0));
+  }
+
+  async max(field: string, query: Query = {}): Promise<number> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    if (results.length === 0) return 0;
+    return Math.max(...results.map(record => Number(record[field]) || 0));
+  }
+
+  async push(query: Query, field: string, value: any): Promise<number> {
+    this.ensureConnected();
+    const records = await this.driver.get(query);
+    let count = 0;
+    for (const record of records) {
+      if (!Array.isArray(record[field])) {
+        record[field] = [];
+      }
+      record[field].push(value);
+      await this.driver.update(query, record); // Note: This might be inefficient if query matches multiple, but driver update handles it.
+      count++;
+    }
+    return count;
+  }
+
+  async pull(query: Query, field: string, value: any): Promise<number> {
+    this.ensureConnected();
+    const records = await this.driver.get(query);
+    let count = 0;
+    for (const record of records) {
+      if (Array.isArray(record[field])) {
+        const initialLength = record[field].length;
+        record[field] = record[field].filter((item: any) => JSON.stringify(item) !== JSON.stringify(value));
+        if (record[field].length !== initialLength) {
+          await this.driver.update(query, record);
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  async random(sampleSize: number = 1): Promise<Data[]> {
+    this.ensureConnected();
+    const results = await this.driver.get({});
+    const shuffled = results.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, sampleSize);
+  }
+
+  async groupBy(field: string, query: Query = {}): Promise<{ [key: string]: Data[] }> {
+    this.ensureConnected();
+    const results = await this.driver.get(query);
+    return results.reduce((groups: { [key: string]: Data[] }, record) => {
+      const key = String(record[field]);
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(record);
+      return groups;
+    }, {});
+  }
+
   private ensureConnected(): void {
     if (!this.isConnected) {
       throw new Error('Database not connected. Call connect() first.');

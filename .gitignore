@@ -25,6 +25,7 @@ yarn-error.log*
 # Testing
 coverage/
 .nyc_output/
+test/
 
 # Environment
 .env
@@ -34,3 +35,4 @@ coverage/
 # Misc
 *.tsbuildinfo
 *.md
+
