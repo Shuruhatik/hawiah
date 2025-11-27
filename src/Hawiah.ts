@@ -8,6 +8,10 @@ export class Hawiah {
   private driver: IDriver;
   private isConnected: boolean = false;
 
+  /**
+   * Creates a new Hawiah instance.
+   * @param driver - The database driver to use
+   */
   constructor(driver: IDriver) {
     this.driver = driver;
   }
@@ -210,34 +214,67 @@ export class Hawiah {
     return await this.driver.count(query);
   }
 
+  /**
+   * Gets a record by its ID.
+   * @param id - The record ID to search for
+   * @returns The matching record or null if not found
+   */
   async getById(id: number | string): Promise<Data | null> {
     this.ensureConnected();
     return await this.driver.getOne({ _id: id });
   }
 
+  /**
+   * Updates a record by its ID.
+   * @param id - The record ID to update
+   * @param data - The data to update
+   * @returns True if the record was updated
+   */
   async updateById(id: number | string, data: Data): Promise<boolean> {
     this.ensureConnected();
     const count = await this.driver.update({ _id: id }, data);
     return count > 0;
   }
 
+  /**
+   * Removes a record by its ID.
+   * @param id - The record ID to remove
+   * @returns True if the record was removed
+   */
   async removeById(id: number | string): Promise<boolean> {
     this.ensureConnected();
     const count = await this.driver.delete({ _id: id });
     return count > 0;
   }
 
+  /**
+   * Checks if a record exists by its ID.
+   * @param id - The record ID to check
+   * @returns True if the record exists
+   */
   async hasId(id: number | string): Promise<boolean> {
     this.ensureConnected();
     return await this.driver.exists({ _id: id });
   }
 
+  /**
+   * Gets records where a field matches a value.
+   * @param field - The field name to match
+   * @param value - The value to match
+   * @returns Array of matching records
+   */
   async getBy(field: string, value: any): Promise<Data[]> {
     this.ensureConnected();
     const query: Query = { [field]: value };
     return await this.driver.get(query);
   }
 
+  /**
+   * Checks if a record exists where a field matches a value.
+   * @param field - The field name to check
+   * @param value - The value to match
+   * @returns True if a matching record exists
+   */
   async hasBy(field: string, value: any): Promise<boolean> {
     this.ensureConnected();
     const query: Query = { [field]: value };
@@ -347,6 +384,9 @@ export class Hawiah {
 
   /**
    * Calculates the sum of a numeric field.
+   * @param field - The field to sum
+   * @param query - Optional filter condition
+   * @returns The sum of all values in the field
    */
   async sum(field: string, query: Query = {}): Promise<number> {
     this.ensureConnected();
@@ -354,6 +394,14 @@ export class Hawiah {
     return results.reduce((sum, record) => sum + (Number(record[field]) || 0), 0);
   }
 
+  /**
+   * Increments a numeric field by a specified amount.
+   * @param query - The filter condition to find the record
+   * @param field - The field to increment
+   * @param amount - The amount to increment by (default: 1)
+   * @returns The new value after incrementing
+   * @throws Error if record is not found
+   */
   async increment(query: Query, field: string, amount: number = 1): Promise<number> {
     this.ensureConnected();
     const record = await this.driver.getOne(query);
@@ -366,11 +414,26 @@ export class Hawiah {
     return newValue;
   }
 
+  /**
+   * Decrements a numeric field by a specified amount.
+   * @param query - The filter condition to find the record
+   * @param field - The field to decrement
+   * @param amount - The amount to decrement by (default: 1)
+   * @returns The new value after decrementing
+   * @throws Error if record is not found
+   */
   async decrement(query: Query, field: string, amount: number = 1): Promise<number> {
     return await this.increment(query, field, -amount);
   }
 
 
+  /**
+   * Pushes a value to the end of an array field.
+   * @param query - The filter condition to find records
+   * @param field - The array field to push to
+   * @param value - The value to push
+   * @returns Number of records updated
+   */
   async push(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
@@ -386,6 +449,13 @@ export class Hawiah {
     return count;
   }
 
+  /**
+   * Removes all occurrences of a value from an array field.
+   * @param query - The filter condition to find records
+   * @param field - The array field to pull from
+   * @param value - The value to remove
+   * @returns Number of records updated
+   */
   async pull(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
@@ -403,6 +473,12 @@ export class Hawiah {
     return count;
   }
 
+  /**
+   * Removes the first element from an array field.
+   * @param query - The filter condition to find records
+   * @param field - The array field to shift
+   * @returns Number of records updated
+   */
   async shift(query: Query, field: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
@@ -417,6 +493,13 @@ export class Hawiah {
     return count;
   }
 
+  /**
+   * Adds a value to the beginning of an array field.
+   * @param query - The filter condition to find records
+   * @param field - The array field to unshift to
+   * @param value - The value to add
+   * @returns Number of records updated
+   */
   async unshift(query: Query, field: string, value: any): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
@@ -432,6 +515,12 @@ export class Hawiah {
     return count;
   }
 
+  /**
+   * Removes the last element from an array field.
+   * @param query - The filter condition to find records
+   * @param field - The array field to pop from
+   * @returns Number of records updated
+   */
   async pop(query: Query, field: string): Promise<number> {
     this.ensureConnected();
     const records = await this.driver.get(query);
@@ -449,6 +538,9 @@ export class Hawiah {
 
   /**
    * Removes a field from matching records.
+   * @param query - The filter condition to find records
+   * @param field - The field name to remove
+   * @returns Number of records updated
    */
   async unset(query: Query, field: string): Promise<number> {
     this.ensureConnected();
@@ -466,6 +558,10 @@ export class Hawiah {
 
   /**
    * Renames a field in matching records.
+   * @param query - The filter condition to find records
+   * @param oldField - The current field name
+   * @param newField - The new field name
+   * @returns Number of records updated
    */
   async rename(query: Query, oldField: string, newField: string): Promise<number> {
     this.ensureConnected();
@@ -483,24 +579,41 @@ export class Hawiah {
   }
 
 
+  /**
+   * Gets the first record in the database.
+   * @returns The first record or null if empty
+   */
   async first(): Promise<Data | null> {
     this.ensureConnected();
     const results = await this.driver.get({});
     return results.length > 0 ? results[0] : null;
   }
 
+  /**
+   * Gets the last record in the database.
+   * @returns The last record or null if empty
+   */
   async last(): Promise<Data | null> {
     this.ensureConnected();
     const results = await this.driver.get({});
     return results.length > 0 ? results[results.length - 1] : null;
   }
 
+  /**
+   * Checks if the database is empty.
+   * @returns True if no records exist
+   */
   async isEmpty(): Promise<boolean> {
     this.ensureConnected();
     const count = await this.driver.count({});
     return count === 0;
   }
 
+  /**
+   * Gets random records from the database.
+   * @param sampleSize - Number of random records to return (default: 1)
+   * @returns Array of random records
+   */
   async random(sampleSize: number = 1): Promise<Data[]> {
     this.ensureConnected();
     const results = await this.driver.get({});
@@ -508,16 +621,29 @@ export class Hawiah {
     return shuffled.slice(0, sampleSize);
   }
 
+  /**
+   * Ensures the database is connected before executing operations.
+   * @throws Error if database is not connected
+   * @private
+   */
   private ensureConnected(): void {
     if (!this.isConnected) {
       throw new Error('Database not connected. Call connect() first.');
     }
   }
 
+  /**
+   * Gets the underlying database driver.
+   * @returns The database driver instance
+   */
   getDriver(): IDriver {
     return this.driver;
   }
 
+  /**
+   * Checks if the database connection is active.
+   * @returns True if connected
+   */
   isActive(): boolean {
     return this.isConnected;
   }
