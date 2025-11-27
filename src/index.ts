@@ -9,3 +9,4 @@ export { MongoDriver, MongoDriverOptions } from './drivers/MongoDriver';
 export { FirebaseDriver, FirebaseDriverOptions } from './drivers/FirebaseDriver';
 export { SQLiteDriver, SQLiteDriverOptions } from './drivers/SQLiteDriver';
 export { MySQLDriver, MySQLDriverOptions } from './drivers/MySQLDriver';
+export { PostgreSQLDriver, PostgreSQLDriverOptions } from './drivers/PostgreSQLDriver';
