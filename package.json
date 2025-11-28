@@ -13,17 +13,58 @@
     "database",
     "schema-less",
     "driver",
-    "abstraction"
+    "abstraction",
+    "sqlite",
+    "mongodb",
+    "mysql",
+    "postgresql",
+    "firebase",
+    "orm",
+    "query-builder"
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuruhatik/hawiah.git"
+  },
+  "homepage": "https://github.com/shuruhatik/hawiah#readme",
+  "bugs": {
+    "url": "https://github.com/shuruhatik/hawiah/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "INSTALLATION.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
     "better-sqlite3": "^12.4.6",
     "firebase": "^12.6.0",
     "js-yaml": "^4.1.1",
     "mongodb": "^7.0.0",
     "mysql2": "^3.15.3",
     "pg": "^8.16.3"
+  },
+  "peerDependenciesMeta": {
+    "better-sqlite3": {
+      "optional": true
+    },
+    "firebase": {
+      "optional": true
+    },
+    "js-yaml": {
+      "optional": true
+    },
+    "mongodb": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
