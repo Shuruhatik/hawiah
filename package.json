@@ -38,11 +38,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shuruhatik/hawiah.git"
+    "url": "git+https://github.com/Shuruhatik/hawiah.git"
   },
   "homepage": "https://hawiah.shuruhatik.com/",
   "bugs": {
-    "url": "https://github.com/shuruhatik/hawiah/issues"
+    "url": "https://github.com/Shuruhatik/hawiah/issues"
   },
   "peerDependencies": {
     "@hawiah/core": "^1.0.0"
