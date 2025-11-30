@@ -154,6 +154,21 @@ For detailed documentation, driver examples, relationships guide, and custom dri
 - [NPM](https://npmjs.com/package/hawiah)
 - [Issues](https://github.com/shuruhatik/hawiah/issues)
 
+## 📦 GitHub Repositories
+
+### Core & Documentation
+- [hawiah](https://github.com/Shuruhatik/hawiah) - Main package and unified API
+- [hawiah-core](https://github.com/shuruhatik/hawiah-core) - Core abstractions and base classes
+- [hawiah-docs](https://github.com/Shuruhatik/hawiah-docs) - Full documentation and guides
+
+### Database Drivers
+- [hawiah-local](https://github.com/Shuruhatik/hawiah-local) - JSON & YAML driver
+- [hawiah-sqlite](https://github.com/Shuruhatik/hawiah-sqlite) - SQLite driver
+- [hawiah-mysql](https://github.com/Shuruhatik/hawiah-mysql) - MySQL driver
+- [hawiah-postgres](https://github.com/Shuruhatik/hawiah-postgres) - PostgreSQL driver
+- [hawiah-firebase](https://github.com/Shuruhatik/hawiah-firebase) - Firebase Firestore driver
+- [hawiah-mongo](https://github.com/Shuruhatik/hawiah-mongo) - MongoDB driver
+
 ## 📄 License
 
 MIT © [Shuruhatik](https://github.com/shuruhatik)
