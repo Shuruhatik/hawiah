@@ -1,0 +1,159 @@
+<div align="center">
+	<br />
+	<p>
+		<a href="https://github.com/shuruhatik/hawiah"><img src="https://i.ibb.co/9kNhFwnT/hawiah-npm.png" alt="hawiah" /></a></br>
+		<a href="https://www.npmjs.com/package/hawiah"><img src="https://img.shields.io/npm/dt/hawiah?color=50BAA8&style=for-the-badge" alt="NPM Downloads" /></a>
+		<a href="https://www.npmjs.com/package/hawiah"><img src="https://img.shields.io/npm/v/hawiah?color=3CB9A7&style=for-the-badge" alt="npm Version" /></a>
+		<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-2E9B8C?style=for-the-badge" alt="License" /></a>
+	</p>
+</div>
+
+-----
+Modular database abstraction with virtual relationships. Support for 7 drivers, 50+ methods, and DataLoader batching. One API to rule them all.
+
+## ✨ Features
+
+- **Universal API** - Same code works with any database
+- **Multiple Drivers** - JSON, YAML, SQLite, MongoDB, Firebase, PostgreSQL, MySQL
+- **Runtime Agnostic** - Works with Node.js, Bun, and Deno
+- **Virtual Relationships** - Define relations between any collections, even across different databases!
+- **DataLoader Optimization** - Automatic query batching and caching eliminates N+1 problems
+- **Extensible** - Create custom drivers for any data source
+- **Schema-less** - No migrations needed
+- **TypeScript Ready** - Full type definitions included
+
+## 📦 Installation
+
+```bash
+# Core package (required)
+npm install hawiah
+# or
+bun add hawiah
+# or
+deno install npm:hawiah
+
+# Choose one or more drivers
+npm install @hawiah/local      # JSON & YAML
+npm install @hawiah/sqlite     # SQLite
+npm install @hawiah/mongo      # MongoDB
+npm install @hawiah/firebase   # Firebase Firestore
+npm install @hawiah/postgres   # PostgreSQL
+npm install @hawiah/mysql      # MySQL
+```
+
+**Works with:**
+- ✅ Node.js
+- ✅ Bun
+- ✅ Deno
+
+## 🚀 Quick Start
+
+```javascript
+import { Hawiah } from 'hawiah';
+import { MongoDriver } from '@hawiah/mongo';
+
+const db = new Hawiah({
+  driver: new MongoDriver({
+    uri: 'mongodb://localhost:27017',
+    databaseName: 'myapp',
+    collectionName: 'users'
+  })
+});
+
+await db.connect();
+await db.insert({ id: 1, name: 'John', age: 25 });
+const users = await db.get({});
+await db.disconnect();
+```
+
+Switch to SQLite or Firebase? Just change the driver. Your code stays the same.
+
+## 🔗 Virtual Relationships - The Game Changer
+
+Define relationships between collections **without foreign keys or schema changes**. Works across different databases!
+
+```javascript
+import { Hawiah } from 'hawiah';
+import { MongoDriver } from '@hawiah/mongo';
+import { SQLiteDriver } from '@hawiah/sqlite';
+
+// Users in MongoDB
+const users = new Hawiah({
+  driver: new MongoDriver({
+    uri: 'mongodb://localhost:27017',
+    databaseName: 'myapp',
+    collectionName: 'users'
+  })
+});
+
+// Posts in SQLite
+const posts = new Hawiah({
+  driver: new SQLiteDriver('./blog.db', 'posts')
+});
+
+// Define virtual relationship - MongoDB ↔ SQLite!
+users.relation('posts', posts, '_id', 'userId', 'many');
+posts.relation('author', users, 'userId', '_id', 'one');
+
+await users.connect();
+await posts.connect();
+
+// Query with relationships - automatically optimized!
+const usersWithPosts = await users.getWith({}, 'posts');
+// Each user includes their posts from SQLite - no N+1 queries!
+
+const postsWithAuthors = await posts.getWith({}, 'author');
+// Each post includes author from MongoDB - fully batched!
+```
+
+**Why Virtual Relationships are Powerful:**
+
+✨ **Cross-Database Relations** - Connect MongoDB users with SQLite posts, or any combination  
+⚡ **Zero N+1 Problems** - DataLoader automatically batches and caches all queries  
+🚀 **No Schema Changes** - No foreign keys, no migrations, just pure flexibility  
+🎯 **Type-Safe** - Full TypeScript support with proper typing  
+🔄 **Nested Relations** - Load relations of relations infinitely  
+💪 **Production Ready** - Battle-tested optimization used by GraphQL servers worldwide
+
+## 🗄️ Available Drivers
+
+| Driver | Package | Use Case |
+|--------|---------|----------|
+| **JSON** | `@hawiah/local` | Development, Testing |
+| **YAML** | `@hawiah/local` | Configuration |
+| **SQLite** | `@hawiah/sqlite` | Desktop/Mobile Apps |
+| **MongoDB** | `@hawiah/mongo` | Web/Cloud Apps |
+| **Firebase** | `@hawiah/firebase` | Real-time Apps |
+| **PostgreSQL** | `@hawiah/postgres` | Enterprise Apps |
+| **MySQL** | `@hawiah/mysql` | Web Apps |
+| **Custom** | - | Any Data Source |
+
+## 📚 API Overview
+
+**Basic Operations:** `insert`, `insertMany`, `get`, `getOne`, `getById`, `update`, `updateById`, `remove`, `removeById`, `clear`
+
+**Virtual Relationships:** 
+- `relation(name, targetCollection, localKey, foreignKey, type)` - Define virtual relation
+- `getWith(query, relations)` - Load data with relations (auto-optimized with DataLoader)
+
+**Advanced:** `sort`, `paginate`, `select`, `count`, `sum`, `group`, `unique`
+
+**Arrays:** `push`, `pull`, `shift`, `unshift`, `pop`
+
+**Fields:** `increment`, `decrement`, `unset`, `rename`
+
+## 📖 Documentation
+
+For detailed documentation, driver examples, relationships guide, and custom driver tutorials:
+
+**[📚 Full Documentation](https://github.com/shuruhatik/hawiah)**
+
+## 🔗 Links
+
+- [GitHub](https://github.com/shuruhatik/hawiah)
+- [NPM](https://npmjs.com/package/hawiah)
+- [Issues](https://github.com/shuruhatik/hawiah/issues)
+
+## 📄 License
+
+MIT © [Shuruhatik](https://github.com/shuruhatik)

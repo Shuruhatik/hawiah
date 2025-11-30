@@ -1,77 +1,57 @@
 {
   "name": "hawiah",
-  "version": "0.1.0",
-  "description": "Schema-less database abstraction layer with multiple driver support",
+  "version": "1.0.0",
+  "description": "One API. Multiple Databases. Zero Complexity. Schema-less database abstraction with smart relationships and DataLoader optimization. Works with Node.js, Bun, and Deno.",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "node test/example.js"
+    "dev": "tsc --watch"
   },
   "keywords": [
     "database",
     "schema-less",
     "driver",
     "abstraction",
+    "orm",
+    "query-builder",
+    "json",
+    "yaml",
     "sqlite",
     "mongodb",
-    "mysql",
-    "postgresql",
     "firebase",
-    "orm",
-    "query-builder"
+    "postgresql",
+    "mysql",
+    "multi-database",
+    "unified-api",
+    "dataloader",
+    "relationships",
+    "n+1",
+    "bun",
+    "deno",
+    "nodejs",
+    "typescript",
+    "nosql",
+    "sql"
   ],
-  "author": "",
+  "author": "Shuruhatik",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shuruhatik/hawiah.git"
+    "url": "git+https://github.com/shuruhatik/hawiah.git"
   },
-  "homepage": "https://github.com/shuruhatik/hawiah#readme",
+  "homepage": "https://hawiah.shuruhatik.com/",
   "bugs": {
     "url": "https://github.com/shuruhatik/hawiah/issues"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "INSTALLATION.md",
-    "LICENSE"
-  ],
   "peerDependencies": {
-    "better-sqlite3": "^12.4.6",
-    "firebase": "^12.6.0",
-    "js-yaml": "^4.1.1",
-    "mongodb": "^7.0.0",
-    "mysql2": "^3.15.3",
-    "pg": "^8.16.3"
+    "@hawiah/core": "^1.0.0"
   },
-  "peerDependenciesMeta": {
-    "better-sqlite3": {
-      "optional": true
-    },
-    "firebase": {
-      "optional": true
-    },
-    "js-yaml": {
-      "optional": true
-    },
-    "mongodb": {
-      "optional": true
-    },
-    "mysql2": {
-      "optional": true
-    },
-    "pg": {
-      "optional": true
-    }
+  "dependencies": {
+    "@hawiah/core": "^1.0.0"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/js-yaml": "^4.0.9",
-    "@types/mysql": "^2.15.27",
     "@types/node": "^20.0.0",
-    "@types/pg": "^8.11.10",
     "typescript": "^5.0.0"
   }
 }
