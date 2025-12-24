@@ -17,9 +17,10 @@ Modular database abstraction with virtual relationships. Support for 7 drivers, 
 - **Multiple Drivers** - JSON, YAML, SQLite, MongoDB, Firebase, PostgreSQL, MySQL
 - **Runtime Agnostic** - Works with Node.js, Bun, and Deno
 - **Virtual Relationships** - Define relations between any collections, even across different databases!
+- **Hybrid Schema** - Blends SQL tables with NoSQL flexibility (Real columns + JSON)
 - **DataLoader Optimization** - Automatic query batching and caching eliminates N+1 problems
 - **Extensible** - Create custom drivers for any data source
-- **Schema-less** - No migrations needed
+- **Schema-less / Schema-full** - You choose: Strict validation or total freedom
 - **TypeScript Ready** - Full type definitions included
 
 ## 📦 Installation
@@ -67,6 +68,38 @@ await db.disconnect();
 ```
 
 Switch to SQLite or Firebase? Just change the driver. Your code stays the same.
+
+## 🧬 The Hybrid Schema System
+
+Hawiah v1.1 introduces a game-changing **Hybrid Schema** capabilities.
+
+### Virtual vs. Real Schemas
+How Hawiah handles your schema depends on the driver:
+
+| Feature | SQL Drivers (Postgres, SQLite, MySQL) | NoSQL Drivers (Mongo, Firebase, Local) |
+| :--- | :--- | :--- |
+| **Logic** | **Real Schema (Physical columns)** | **Virtual Schema (Validator)** |
+| **Storage** | Columns for defined fields + JSON for extras. | Full JSON Document. |
+| **Benefit** | Native SQL performance & indexing. | Maximum flexibility & speed. |
+
+### Schema Definition
+```javascript
+import { Schema, DataTypes } from '@hawiah/core';
+
+const userSchema = new Schema({
+  // Basic Types
+  username: { type: DataTypes.STRING, required: true },
+  age:      { type: DataTypes.INTEGER, min: 18 },
+  
+  // Advanced Types
+  email:    { type: DataTypes.EMAIL, unique: true },
+  tags:     { type: DataTypes.ARRAY },
+  
+  // Default Values
+  isActive: { type: DataTypes.BOOLEAN, default: true },
+  created:  { type: DataTypes.DATE, default: () => new Date() }
+});
+```
 
 ## 🔗 Virtual Relationships - The Game Changer
 

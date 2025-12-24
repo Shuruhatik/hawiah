@@ -1,6 +1,6 @@
 {
   "name": "hawiah",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "One API. Multiple Databases. Zero Complexity. Schema-less database abstraction with smart relationships and DataLoader optimization. Works with Node.js, Bun, and Deno.",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -40,15 +40,12 @@
     "type": "git",
     "url": "https://github.com/Shuruhatik/hawiah"
   },
-  "homepage": "https://hawiah.shuruhatik.com/",
+  "homepage": "https://hawiah.js.org/",
   "bugs": {
     "url": "https://github.com/Shuruhatik/hawiah/issues"
   },
-  "peerDependencies": {
-    "@hawiah/core": "^1.0.0"
-  },
   "dependencies": {
-    "@hawiah/core": "^1.0.0"
+    "@hawiah/core": "^1.1.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
