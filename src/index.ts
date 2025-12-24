@@ -1,2 +1,12 @@
-// Re-export from @hawiah/core
-export { Hawiah, MemoryDriver, IDriver, Query, Data } from '@hawiah/core';
+export {
+    Hawiah,
+    IDriver,
+    Query,
+    Data,
+    MemoryDriver,
+    Schema,
+    SchemaDefinition,
+    SchemaType,
+    SchemaField,
+    DataTypes
+} from '@hawiah/core';
