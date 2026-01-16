@@ -89,10 +89,10 @@ import { Schema, DataTypes } from '@hawiah/core';
 const userSchema = new Schema({
   // Basic Types
   username: { type: DataTypes.STRING, required: true },
-  age:      { type: DataTypes.INTEGER, min: 18 },
+  age:      { type: DataTypes.INTEGER },
   
   // Advanced Types
-  email:    { type: DataTypes.EMAIL, unique: true },
+  email:    { type: DataTypes.EMAIL },
   tags:     { type: DataTypes.ARRAY },
   
   // Default Values
