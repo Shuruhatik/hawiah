@@ -92,7 +92,7 @@ const userSchema = new Schema({
   age:      { type: DataTypes.INTEGER, min: 18 },
   
   // Advanced Types
-  email:    { type: DataTypes.EMAIL, unique: true },
+  email:    { type: DataTypes.EMAIL },
   tags:     { type: DataTypes.ARRAY },
   
   // Default Values
